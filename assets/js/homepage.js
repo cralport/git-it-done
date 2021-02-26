@@ -6,7 +6,6 @@ var repoSearchTerm = document.querySelector("#repo-search-term");
 
 var formSubmitHandler = function (event) {
     event.preventDefault();
-    console.log(event);
 };
 
 var username = nameInputEl.value.trim();
@@ -24,21 +23,21 @@ var getUserRepos = function (user) {
 
     //make a request to the url
     fetch(apiUrl)
-    .then(function (response) {
-        if (response.ok) {
-            console.log(response);
-            response.json().then(function (data) {
-                console.log(data);
-                displayRepos(data, user);
+        .then(function (response) {
+            if (response.ok) {
+                console.log(response);
+                response.json().then(function (data) {
+                    console.log(data);
+                    displayRepos(data, user);
 
-            });
-        } else {
-            alert("Error: " + response.statusText);
-        }
-    })
-    .catch(function(error) {
-        alert("Unable to connect to GitHub");
-    });
+                });
+            } else {
+                alert("Error: " + response.statusText);
+            }
+        })
+        .catch(function (error) {
+            alert("Unable to connect to GitHub");
+        });
 };
 var displayRepos = function (repos, searchTerm) {
     if (repos.length === 0) {
@@ -46,16 +45,17 @@ var displayRepos = function (repos, searchTerm) {
         return;
     }
 
-    console.log(repos);
-    console.log(searchTerm);
-    repoContainerEl.textContent = "";
+   
     repoSearchTerm.textContent = searchTerm;
 
     for (var i = 0; i < repos.length; i++) {
+       
         var repoName = repos[i].owner.login + "/" + repos[i].name;
 
-        var repoEl = document.createElement("div");
+        var repoEl = document.createElement("a");
         repoEl.classList = "list-item flex-row justify-space-between align-center";
+        repoEl.setAttribute("href", "./single-repo.html");
+
 
         var titleEl = document.createElement("span");
         titleEl.textContent = repoName;
@@ -67,7 +67,7 @@ var displayRepos = function (repos, searchTerm) {
         if (repos[i].open_issues_count > 0) {
             statusEl.innerHTML = "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + "issue(s)";
         } else {
-            statusEl.innerHTML = "<i class='fas fa-check-a square status-icon icon-success'></i>";
+            statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
 
         }
         repoEl.appendChild(statusEl);

@@ -1,6 +1,19 @@
 var issueContainerEl = document.querySelector("#issues-container");
 var limitWarningEl = document.querySelector("#limit-warning");
+var repoNameEl = document.querySelector("#repo-name");
 
+var getRepoName = function () {
+    var queryString = document.location.search;
+    var repoName = queryString.split("=")[1];
+    
+    if (repoName) {
+        repoNameEl.textContent = repoName;
+        getReposIssues(repoName);
+    } else {
+        document.location.replace("./index.html");
+    }
+};
+   
 
 var getReposIssues = function (repo) {
     console.log(repo);
@@ -17,18 +30,18 @@ var getReposIssues = function (repo) {
             });
         }
         else {
-            alert("There is a problem with your request!");
+           document.location.replace("./index.html");
         }
     });
 }
 
 var displayIssues = function (issues) {
 
-    if (issues.length === 0){
+    if (issues.length === 0) {
         issueContainerEl.textContent = "This repo has no open issues!";
         return;
     }
-   
+
     for (var i = 0; i < issues.length; i++) {
         var issuesEl = document.createElement("a");
         issuesEl.classList = "list-item flex-row justify-space-between align-center";
@@ -45,19 +58,19 @@ var displayIssues = function (issues) {
         if (issues[i].pull_request) {
             typeEL.textContent = "(Pull Request)";
         } else {
-            typeEl.textContent ="(Issues)";
+            typeEl.textContent = "(Issues)";
         }
         issuesEl.appendChild(typeEl);
-        }
-        issueContainerEl.appendChild(issuesEl);
     }
+    issueContainerEl.appendChild(issuesEl);
+}
 
-var displayWarning = function(repo) {
+var displayWarning = function (repo) {
     limitWarningEl.textContent = "To see more than 30 issues, visit";
 
     var linkEl = document.createElement("a");
     linkEl.textContent = "See more Issues on GitHub.com";
-    linkEl.setAttribute("href", "https://github.com/" + repos + "/issues");
+    linkEl.setAttribute("href", "https://github.com/" + repo + "/issues");
     linkEl.setAttribute("target", "_blank");
 
     limitWarningEl.appendChild(linkEl);
@@ -65,4 +78,4 @@ var displayWarning = function(repo) {
 };
 
 
-getReposIssues("facebook/react");
+getRepoName()
